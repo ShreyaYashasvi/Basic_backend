@@ -22,5 +22,5 @@ const uploadToCloudinary = async (localFilePath)=>{
         return null;
 
 
-}
-export { uploadToCloudinary}
+}}
+export {uploadToCloudinary}
