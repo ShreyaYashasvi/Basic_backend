@@ -11,7 +11,7 @@ const userSchema = new Schema(
             unique:true,
             lowercase:true,
             trim:true,
-            indek:true
+            index:true
 
         },
         email:{
@@ -37,8 +37,9 @@ const userSchema = new Schema(
         },
 
         watchHistory:{
-            type:Schema.Types.ObjectId,
-            ref:"videos"
+            type:[{type:Schema.Types.ObjectId,
+            ref:"videos"}],
+            default:[]
         },
          password:{
             type:String,
@@ -51,13 +52,19 @@ const userSchema = new Schema(
     { timestamps:true}
 )
 
-userSchema.pre("save", async function(next){
-    if(!this.isModified("password")){
-        return next()
-    }
-    this.password = await bcrypt.hash(this.password, 10)
-    next()
-})
+// userSchema.pre("save", async function(next){
+//     if(!this.isModified("password")){
+//         return next()
+//     }
+//     this.password = await bcrypt.hash(this.password, 10)
+//     next()
+// })
+
+
+userSchema.pre("save", async function() {
+    if (!this.isModified("password")) return;
+    this.password = await bcrypt.hash(this.password, 10);
+});
 
 userSchema.methods.isPasswordCorrect = async function(password){
     return await bcrypt.compare(password, this.password)
